@@ -826,83 +826,112 @@
   </main>
 
   <script>
-    // Toggle mobile navigation
-    document.querySelector('.menu-toggle').addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('active');
-    });
+document.querySelector('.menu-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('active');
+});
 
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 70,
-            behavior: 'smooth'
-          });
-          // Update active state
-          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-          // Close mobile menu after selection
-          if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.remove('active');
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      window.scrollTo({
+        top: targetElement.offsetTop - 70,
+        behavior: 'smooth'
+      });
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('active');
+      }
+    }
+  });
+});
+
+// Improved search function
+const searchInput = document.getElementById('searchInput');
+let debounceTimeout;
+
+function escapeHtml(unsafe) {
+  return unsafe
+       .replace(/&/g, "&amp;")
+       .replace(/</g, "&lt;")
+       .replace(/>/g, "&gt;")
+       .replace(/"/g, "&quot;")
+       .replace(/'/g, "&#039;");
+}
+
+searchInput.addEventListener('input', () => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const sections = document.querySelectorAll('.section');
+    
+    sections.forEach(section => {
+      // Reset previous highlights and visibility
+      section.style.display = 'block';
+      section.querySelectorAll('.highlight').forEach(h => h.outerHTML = h.innerHTML);
+
+      if (searchTerm !== '') {
+        const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        let hasMatch = false;
+
+        while (node = walker.nextNode()) {
+          const originalText = node.textContent;
+          const text = originalText.toLowerCase();
+          
+          if (text.includes(searchTerm)) {
+            hasMatch = true;
+            // Escape HTML to prevent rendering tags
+            const safeText = escapeHtml(originalText);
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            const highlighted = safeText.replace(regex, '<span class="highlight">$1</span>');
+            
+            // Replace the text node with an element node to handle HTML safely
+            const span = document.createElement('span');
+            span.innerHTML = highlighted;
+            node.parentNode.replaceChild(span, node);
           }
         }
-      });
-    });
 
-    // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => {
-      const searchTerm = searchInput.value.toLowerCase();
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(section => {
-        const sectionText = section.textContent.toLowerCase();
-        if (searchTerm === '' || sectionText.includes(searchTerm)) {
-          section.style.display = 'block';
-          // Highlight matches
-          if (searchTerm !== '') {
-            const regex = new RegExp(`(${searchTerm})`, 'gi');
-            section.innerHTML = section.innerHTML.replace(regex, '<span class="highlight">$1</span>');
-          }
-        } else {
+        if (!hasMatch) {
           section.style.display = 'none';
         }
-      });
-    });
-
-    // Expandable navigation items
-    document.querySelectorAll('.nav-item').forEach(item => {
-      const link = item.querySelector('.nav-link');
-      const subNav = item.querySelector('.sub-nav');
-      if (subNav) {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          item.classList.toggle('expanded');
-        });
       }
     });
+  }, 300); // Debounce delay in milliseconds
+});
 
-    // Active section highlighting on scroll
-    window.addEventListener('scroll', () => {
-      const sections = document.querySelectorAll('.section');
-      let currentSection = '';
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.clientHeight;
-        if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
-          currentSection = '#' + section.getAttribute('id');
-        }
-      });
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === currentSection) {
-          link.classList.add('active');
-        }
-      });
+document.querySelectorAll('.nav-item').forEach(item => {
+  const link = item.querySelector('.nav-link');
+  const subNav = item.querySelector('.sub-nav');
+  if (subNav) {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      item.classList.toggle('expanded');
     });
-  </script>
+  }
+});
+
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('.section');
+  let currentSection = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 100;
+    const sectionHeight = section.clientHeight;
+    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+      currentSection = '#' + section.getAttribute('id');
+    }
+  });
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === currentSection) {
+      link.classList.add('active');
+    }
+  });
+});
+</script>
 </body>
 </html>
