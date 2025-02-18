@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IWHC Training Manual</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #004466;
+      --secondary-color: #f4f4f4;
+      --text-color: #333;
+      --border-color: #ddd;
+      --hover-color: #0066991a;
+      --sidebar-width: 300px;
+      --header-height: 60px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      overflow-x: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    header h1 {
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+    .search-container {
+      flex: 1;
+      max-width: 600px;
+      margin: 0 1rem;
+      position: relative;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: background-color 0.3s;
+    }
+    #searchInput:focus {
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    #searchInput::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    #sidebar {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background-color: var(--secondary-color);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      z-index: 900;
+      padding: 1rem;
+    }
+    .nav-tree {
+      list-style: none;
+    }
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+    .nav-link {
+      display: block;
+      padding: 0.5rem;
+      color: var(--text-color);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .nav-link:hover {
+      background-color: var(--hover-color);
+    }
+    .nav-link.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .sub-nav {
+      margin-left: 1rem;
+      display: none;
+    }
+    .nav-item.expanded > .sub-nav {
+      display: block;
+    }
+    #content {
+      margin-left: var(--sidebar-width);
+      margin-top: var(--header-height);
+      padding: 2rem;
+      max-width: 1200px;
+    }
+    .section {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    .section h2 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    .section h3 {
+      color: var(--primary-color);
+      margin: 1.5rem 0 1rem;
+      font-size: 1.4rem;
+    }
+    .section p, .section ul {
+      margin-bottom: 1rem;
+    }
+    .section ul {
+      margin-left: 1.5rem;
+      list-style: disc;
+    }
+    .highlight {
+      background-color: yellow;
+      padding: 2px;
+    }
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      #sidebar {
+        transform: translateX(-100%);
+      }
+      #sidebar.active {
+        transform: translateX(0);
+      }
+      #content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+      .search-container {
+        max-width: none;
+      }
+    }
+    .confidential-banner {
+      background-color: #ff000020;
+      padding: 0.5rem;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .metadata {
+      background-color: var(--secondary-color);
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .metadata p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="menu-toggle" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h1>IWHC Training Manual</h1>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search manual...">
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar">
+    <ul class="nav-tree">
+      <li class="nav-item">
+        <a href="#document-control" class="nav-link">Document Control</a>
+      </li>
+      <li class="nav-item">
+        <a href="#introduction" class="nav-link">1.0 Introduction</a>
+        <ul class="sub-nav">
+          <li><a href="#purpose" class="nav-link">1.1 Purpose</a></li>
+          <li><a href="#overview" class="nav-link">1.2 IWHC Overview</a></li>
+          <li><a href="#safety-precautions" class="nav-link">1.3 Safety Precautions</a></li>
+          <li><a href="#target-audience" class="nav-link">1.4 Target Audience</a></li>
+          <li><a href="#env-compliance" class="nav-link">1.5 Environmental Compliance Overview</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#systems-overview" class="nav-link">2.0 Systems Overview</a>
+        <ul class="sub-nav">
+          <li><a href="#desc-iwhc" class="nav-link">2.1 Description of the IWHC</a></li>
+          <li><a href="#baleen-components" class="nav-link">2.2 Baleen Filter Components</a></li>
+          <li><a href="#marinestream" class="nav-link">2.3 MarineStream™</a></li>
+          <li><a href="#diver-tools" class="nav-link">2.4 Diver Tools</a></li>
+          <li><a href="#rovs" class="nav-link">2.5 ROVs</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#ms-implementation" class="nav-link">3.0 MarineStream™ Implementation</a>
+        <ul class="sub-nav">
+          <li><a href="#ms-overview" class="nav-link">3.1 Overview</a></li>
+          <li><a href="#recording-uploading" class="nav-link">3.2 Recording & Uploading</a></li>
+          <li><a href="#ms-integration" class="nav-link">3.3 Integration with Workflows</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#diver-selection" class="nav-link">4.0 Diver Tools & Selection</a>
+        <ul class="sub-nav">
+          <li><a href="#diver-overview" class="nav-link">4.1 Overview</a></li>
+          <li><a href="#diver-types" class="nav-link">4.2 Types of Tools</a></li>
+          <li><a href="#diver-criteria" class="nav-link">4.3 Selection Criteria</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#rov-implementation" class="nav-link">5.0 ROV Implementation</a>
+        <ul class="sub-nav">
+          <li><a href="#flying-rovs" class="nav-link">5.1 Flying ROVs</a></li>
+          <li><a href="#crawling-rovs" class="nav-link">5.2 Crawling ROVs</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#operating-procedures" class="nav-link">6.0 Operating Procedures</a>
+        <ul class="sub-nav">
+          <li><a href="#maintainx" class="nav-link">6.1 MaintainX</a></li>
+          <li><a href="#mobilisation" class="nav-link">6.2 Mobilisation/Pre-Mobilisation</a></li>
+          <li><a href="#system-init" class="nav-link">6.3 System Initialisation</a></li>
+          <li><a href="#hose-init" class="nav-link">6.4 Hose/Trash Pump/Rapid Reel/HPU Initialisation</a></li>
+          <li><a href="#operation" class="nav-link">6.5 Operation</a></li>
+          <li><a href="#daily-shutdown" class="nav-link">6.6 Daily Shutdown</a></li>
+          <li><a href="#demobilisation" class="nav-link">6.7 Demobilisation</a></li>
+          <li><a href="#decommissioning" class="nav-link">6.8 Decommissioning</a></li>
+          <li><a href="#storage-clean" class="nav-link">6.9 Storage Clean</a></li>
+          <li><a href="#cleaning-procedures" class="nav-link">6.10 Cleaning Procedures</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#maintenance-procedures" class="nav-link">7.0 Maintenance Procedures</a>
+        <ul class="sub-nav">
+          <li><a href="#routine-maintenance" class="nav-link">7.1 Routine Maintenance</a></li>
+          <li><a href="#maintenance-processes" class="nav-link">7.2 Maintenance Processes</a></li>
+          <li><a href="#component-replacement" class="nav-link">7.3 Component Replacement</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#reporting" class="nav-link">8.0 Reporting</a>
+        <ul class="sub-nav">
+          <li><a href="#reporting-purpose" class="nav-link">8.1 Purpose</a></li>
+          <li><a href="#reporting-triggers" class="nav-link">8.2 Triggers</a></li>
+          <li><a href="#reporting-process" class="nav-link">8.3 Process</a></li>
+          <li><a href="#documentation-records" class="nav-link">8.4 Documentation</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#troubleshooting" class="nav-link">9.0 Troubleshooting</a>
+        <ul class="sub-nav">
+          <li><a href="#common-issues" class="nav-link">9.1 Common Issues</a></li>
+          <li><a href="#alarm-codes" class="nav-link">9.2 Alarm/Fault Codes</a></li>
+          <li><a href="#system-reset" class="nav-link">9.3 System Reset</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#safety-procedures" class="nav-link">10.0 Safety Procedures</a>
+        <ul class="sub-nav">
+          <li><a href="#emergency-shutdown" class="nav-link">10.1 Emergency Shutdown</a></li>
+          <li><a href="#electrical-safety" class="nav-link">10.2 Electrical Safety</a></li>
+          <li><a href="#swms" class="nav-link">10.3 SWMS</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#technical-specifications" class="nav-link">11.0 Technical Specifications</a>
+        <ul class="sub-nav">
+          <li><a href="#system-capacities" class="nav-link">11.1 System Capacities</a></li>
+          <li><a href="#pump-specs" class="nav-link">11.2 Pump Specifications</a></li>
+          <li><a href="#electrical-water" class="nav-link">11.3 Electrical & Water Supply</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#environmental-considerations" class="nav-link">12.0 Environmental Considerations</a>
+        <ul class="sub-nav">
+          <li><a href="#legislation" class="nav-link">12.1 Legislation & Codes</a></li>
+          <li><a href="#biosecurity" class="nav-link">12.2 Biosecurity</a></li>
+          <li><a href="#waste-disposal" class="nav-link">12.3 Waste Disposal</a></li>
+          <li><a href="#env-monitoring" class="nav-link">12.4 Environmental Monitoring</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#record-keeping" class="nav-link">13.0 Record Keeping & Documentation</a>
+        <ul class="sub-nav">
+          <li><a href="#daily-log" class="nav-link">13.1 Daily Log Sheets</a></li>
+          <li><a href="#maintenance-records" class="nav-link">13.2 Maintenance Records</a></li>
+          <li><a href="#incident-reporting" class="nav-link">13.3 Incident Reporting</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="#appendix" class="nav-link">14.0 Appendix</a>
+        <ul class="sub-nav">
+          <li><a href="#glossary" class="nav-link">14.1 Glossary of Terms</a></li>
+          <li><a href="#swms" class="nav-link">14.2 SWMS</a></li>
+          <li><a href="#contact-info" class="nav-link">14.3 Contact Information</a></li>
+          <li><a href="#consumable-log" class="nav-link">14.4 Consumable Usage Log</a></li>
+          <li><a href="#competency" class="nav-link">14.5 Competency Verification</a></li>
+          <li><a href="#daily-log-app" class="nav-link">14.6 Daily Log Sheets</a></li>
+          <li><a href="#maintenance-sheet" class="nav-link">14.7 Maintenance Recording Sheet</a></li>
+          <li><a href="#maintenance-records-app" class="nav-link">14.8 Maintenance Records</a></li>
+          <li><a href="#reporting-form" class="nav-link">14.9 Reporting Form</a></li>
+          <li><a href="#tsurumi-specs" class="nav-link">14.10 Tsurumi Pump Specs</a></li>
+          <li><a href="#ultraflow-specs" class="nav-link">14.11 Ultraflow Pump Specs</a></li>
+          <li><a href="#gmp-specs" class="nav-link">14.12 GMP Transfer Pump Specs</a></li>
+          <li><a href="#uv-specs" class="nav-link">14.13 UV Specifications</a></li>
+          <li><a href="#trash-pump-specs" class="nav-link">14.14 Trash Pump Specs</a></li>
+          <li><a href="#vsd-specs" class="nav-link">14.15 Variable Speed Drive Specs</a></li>
+          <li><a href="#mobilisation-sop" class="nav-link">14.16 Mobilisation SOP</a></li>
+          <li><a href="#initialisation-sop" class="nav-link">14.17 Initialisation SOP</a></li>
+          <li><a href="#operation-sop" class="nav-link">14.18 Operation SOP</a></li>
+          <li><a href="#daily-shutdown-sop" class="nav-link">14.19 Daily Shutdown SOP</a></li>
+          <li><a href="#demobilisation-sop" class="nav-link">14.20 Demobilisation SOP</a></li>
+          <li><a href="#waste-management" class="nav-link">14.21 Waste Management Plan</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="content">
+    <!-- Document Control -->
+    <section id="document-control" class="section">
+      <div class="confidential-banner">CONFIDENTIAL</div>
+      <h2>Document Control</h2>
+      <div class="metadata">
+        <p><strong>DOCUMENT STATUS:</strong> DRAFT Uncontrolled</p>
+        <p><strong>Prepared by:</strong> Kyden Bradley</p>
+        <p><strong>Date:</strong> 23/01/2025</p>
+        <p><strong>REVISION HISTORY:</strong> DRAFT – Initial Draft for internal review – 16th Jan 2025 – Kyden Bradley</p>
+      </div>
+      <p>If the document status is blank or marked “Uncontrolled” the user must check that the copy being used is the latest revision of the document available.</p>
+    </section>
+
+    <!-- 1.0 Introduction -->
+    <section id="introduction" class="section">
+      <h2>1.0 Introduction</h2>
+      <!-- 1.1 Purpose -->
+      <section id="purpose" class="section">
+        <h3>1.1 Purpose</h3>
+        <p>This training manual serves as a comprehensive guide to all aspects of In-Water Hull Cleaning (IWHC), including underwater cleaning operations, waste containment, environmental compliance, and the use of associated hardware and software. It provides detailed procedures for the safe and effective operation of IWHC components—such as diver tools, MarineStream™ software, biofouling filtration systems, and both autonomous and manual cleaning equipment—ensuring regulatory compliance at every step.</p>
+        <p>The primary objective of IWHC is to optimise vessel efficiency by reducing hull roughness, improving fuel economy, and employing sustainable cleaning practices that prevent the spread of Invasive Marine Species (IMS). Structured as a step-by-step operational reference, this manual covers mobilisation, system initialisation, operational protocols, maintenance, troubleshooting, and reporting. It also functions as a training resource for both new and existing personnel.</p>
+      </section>
+      <!-- 1.2 IWHC Overview -->
+      <section id="overview" class="section">
+        <h3>1.2 IWHC Overview</h3>
+        <p>The In-Water Hull Cleaning (IWHC) system is a fully integrated solution designed to optimize vessel performance, enhance biofouling management, and uphold environmental compliance. It encompasses a range of specialized components and technologies that work together to ensure effective cleaning, waste capture, and data management while minimizing the spread of Invasive Marine Species (IMS). The system includes:</p>
+        <ul>
+          <li><strong>MarineStream™ Software:</strong> A digital compliance, asset management, and reporting platform that records cleaning operations, biosecurity evidence, and system performance.</li>
+          <li><strong>Diver-Operated Tools & Equipment:</strong> Manual cleaning tools, suction systems, and hydraulic-powered devices that remove biofouling efficiently while ensuring waste containment.</li>
+          <li><strong>Robotic & Autonomous Cleaning Units:</strong> Crawler and ROV-based systems for precision cleaning and automated hull maintenance with integrated waste capture.</li>
+          <li><strong>Seawater Filtration & Waste Management System:</strong> A multi-stage process that filters and disinfects water before discharge, including a Bow Screen Filter, Baleen Filter, Bag Filter Module, and UV Unit.</li>
+          <li><strong>Hydraulic & Power Systems:</strong> Provide necessary power to cleaning tools, suction units, and robotic systems.</li>
+        </ul>
+      </section>
+      <!-- 1.3 Safety Precautions -->
+      <section id="safety-precautions" class="section">
+        <h3>1.3 Safety Precautions</h3>
+        <ul>
+          <li><strong>General Operational Safety:</strong> Always check for residual pressure before maintenance; ensure all moving parts are stopped and emergency systems are functional.</li>
+          <li><strong>Diver & In-Water Safety:</strong> Maintain clear communication, avoid entanglement hazards, work in pairs, and wear appropriate PPE (wetsuits/drysuits, helmets, gloves, weight belts).</li>
+          <li><strong>Robotic & Autonomous Units:</strong> Keep clear of active units, ensure manual overrides are available, and perform visibility checks before deployment.</li>
+          <li><strong>Filtration & Waste Management:</strong> Avoid direct contact with waste; use bunds and spill containment measures.</li>
+          <li><strong>Electrical & Hydraulic Safety:</strong> Isolate systems during maintenance, beware of pinch points, and secure high-pressure connections.</li>
+          <li><strong>Worksite & Environmental Safety:</strong> Wear required PPE, maintain emergency access, and follow proper waste disposal procedures to prevent marine pollution.</li>
+        </ul>
+      </section>
+      <!-- 1.4 Target Audience -->
+      <section id="target-audience" class="section">
+        <h3>1.4 Target Audience</h3>
+        <p>This training manual is designed for equipment operators, maintenance technicians, supervisors, dive supervisors, divers, and environmental compliance officers involved in IWHC operations.</p>
+      </section>
+      <!-- 1.5 Environmental Compliance Overview -->
+      <section id="env-compliance" class="section">
+        <h3>1.5 Environmental Compliance Overview</h3>
+        <p>IWHC operations must adhere to stringent environmental regulations to protect marine ecosystems and prevent the spread of invasive species. Operators are required to implement biosecurity protocols, monitor water quality, and manage waste in an environmentally responsible manner.</p>
+      </section>
+    </section>
+
+    <!-- 2.0 Systems Overview -->
+    <section id="systems-overview" class="section">
+      <h2>2.0 Systems Overview</h2>
+      <!-- 2.1 Description of the IWHC -->
+      <section id="desc-iwhc" class="section">
+        <h3>2.1 Description of the IWHC</h3>
+        <p>The IWHC system integrates diver-operated tools and robotic units to remove biofouling efficiently while capturing waste. It employs a dual-method approach: targeted cleaning via divers using handheld tools, and large-scale cleaning via robotic crawlers that attach to the hull and use suction and rotating brushes. This ensures thorough cleaning while preserving anti-fouling coatings.</p>
+      </section>
+      <!-- 2.2 Baleen Filter Components and their Functions -->
+      <section id="baleen-components" class="section">
+        <h3>2.2 Baleen Filter Components and their Functions</h3>
+        <ul>
+          <li><strong>Bow Screen Filter:</strong> Captures large debris by pumping wastewater over a screen and directing waste into a catchment bag with an underlying bund.</li>
+          <li><strong>Baleen Filter:</strong> Provides fine filtration using a 5-micron screen and an integrated spray bar; treated water is collected in a baleen bund.</li>
+          <li><strong>Spray Bar:</strong> Uses compressed air and freshwater from a dedicated tank to dislodge waste from the filter screens continuously.</li>
+          <li><strong>Bag Filter Module (BFM):</strong> Houses multiple bag filters to capture residual particulate matter down to 5 microns.</li>
+          <li><strong>UV Unit:</strong> Disinfects water with ultraviolet light before discharge to ensure compliance with environmental standards.</li>
+          <li><strong>Hydraulic Power Unit (HPU):</strong> A diesel-powered unit that powers the trash pump to draw water into the system.</li>
+          <li><strong>Rapid Reel:</strong> Automatically manages suction hoses for efficient deployment and retrieval during operations.</li>
+          <li><strong>Hydraulic Trash Pump:</strong> Transfers collected waste into the filtration system with a quick-connect design for hoses.</li>
+          <li><strong>System Flow Diagram:</strong> (Refer to Figure 1 in the manual for a detailed diagram of the filtration stages and flow direction.)</li>
+        </ul>
+      </section>
+      <!-- 2.3 MarineStream™ -->
+      <section id="marinestream" class="section">
+        <h3>2.3 MarineStream™</h3>
+        <p>MarineStream™ is a digital compliance and reporting platform that records cleaning operations in real time. It supports live video streaming, automatic data logging, and the generation of compliance reports. Integrated with diver tools and robotic units, it enables operators to document pre- and post-cleaning conditions and to verify that all operations meet regulatory standards.</p>
+      </section>
+      <!-- 2.4 Diver Tools -->
+      <section id="diver-tools" class="section">
+        <h3>2.4 Diver Tools</h3>
+        <p>Diver-operated tools are essential for manual biofouling removal. These include scrapers, suction devices, brushes, and specialized tools designed to clean niche areas. They are engineered to minimize damage to hull coatings while ensuring that dislodged material is captured within the closed-loop filtration system.</p>
+      </section>
+      <!-- 2.5 ROVs -->
+      <section id="rovs" class="section">
+        <h3>2.5 ROVs</h3>
+        <p>Remotely Operated Vehicles (ROVs) are used for both inspection and cleaning. Flying ROVs are compact drones equipped with high-resolution cameras, sonar, and lighting for hull inspections, while Crawling ROVs attach to the hull and use suction and filtration to remove light biofouling. These reduce diver risk and provide detailed operational data.</p>
+      </section>
+    </section>
+
+    <!-- 3.0 MarineStream™ Implementation -->
+    <section id="ms-implementation" class="section">
+      <h2>3.0 MarineStream™ Implementation</h2>
+      <!-- 3.1 Overview -->
+      <section id="ms-overview" class="section">
+        <h3>3.1 Overview of Implementation</h3>
+        <p>MarineStream™ provides live access to cleaning operations for customers, vessel operators, and regulatory authorities. It enables real-time monitoring of system performance, documentation of biofouling levels, and collection of video evidence for compliance purposes.</p>
+        <ul>
+          <li><strong>Purpose and Benefits:</strong> Provides live streaming, detailed analytics, and automated reporting to optimize cleaning operations.</li>
+          <li><strong>Regulatory Compliance:</strong> Ensures adherence to IMO, MARPOL, and national biosecurity guidelines by maintaining thorough records.</li>
+        </ul>
+      </section>
+      <!-- 3.2 Recording and Uploading -->
+      <section id="recording-uploading" class="section">
+        <h3>3.2 Recording and Uploading</h3>
+        <p>Before cleaning operations commence, verify that all recording equipment—helmet-mounted cameras, ROV-integrated cameras, and data loggers—is properly set up. Configure video feeds via OBS and connect them to MarineStream™. Operators can capture live video streams as well as still images for documentation.</p>
+      </section>
+      <!-- 3.3 Integration with Workflows -->
+      <section id="ms-integration" class="section">
+        <h3>3.3 Integrating MarineStream™ with Operational Workflows</h3>
+        <p>MarineStream™ is integrated with MaintainX CMMS to synchronize cleaning logs with maintenance schedules. It automatically logs cleaning sessions, tracks biofouling levels, and generates compliance reports. Data from MarineStream™ is used for performance analytics and to drive predictive maintenance strategies.</p>
+      </section>
+    </section>
+
+    <!-- 4.0 Diver Tools and Selection -->
+    <section id="diver-selection" class="section">
+      <h2>4.0 Diver Tools and Selection</h2>
+      <!-- 4.1 Overview -->
+      <section id="diver-overview" class="section">
+        <h3>4.1 Overview of Diver Tools in IWHC Operations</h3>
+        <p>Diver-operated tools are critical for manual cleaning operations. They allow divers to remove biofouling with precision while ensuring that dislodged material is captured within the filtration system, thereby maintaining compliance with environmental and biosecurity standards.</p>
+      </section>
+      <!-- 4.2 Types of Tools -->
+      <section id="diver-types" class="section">
+        <h3>4.2 Types of Tools</h3>
+        <ul>
+          <li><strong>Pushing and Pulling Hand Tools:</strong> Available in polyurethane for soft fouling or hard nylon for tougher fouling.</li>
+          <li><strong>Flat Funnel Capture Tool:</strong> A suction-assisted device that seals against the hull to capture dislodged material.</li>
+          <li><strong>Scourer Pads:</strong> Gentle cleaning pads used for delicate surfaces.</li>
+          <li><strong>Niche Area Cleaning Tools:</strong> Specialized devices for cleaning hard-to-reach areas such as sea chests, thruster tunnels, and cooling intakes.</li>
+        </ul>
+      </section>
+      <!-- 4.3 Selection Criteria -->
+      <section id="diver-criteria" class="section">
+        <h3>4.3 Selection Criteria for Diver Tools</h3>
+        <p>Tool selection is based on the type of fouling and the condition of the hull. For soft fouling, gentler tools are preferred, whereas tougher fouling may require more aggressive devices. In all cases, tools must ensure that dislodged material is captured and not dispersed into the marine environment.</p>
+      </section>
+    </section>
+
+    <!-- 5.0 ROV Implementation -->
+    <section id="rov-implementation" class="section">
+      <h2>5.0 ROV Implementation</h2>
+      <!-- 5.1 Flying ROVs -->
+      <section id="flying-rovs" class="section">
+        <h3>5.1 Flying ROVs – Inspection & Surveillance</h3>
+        <p>Flying ROVs are compact underwater drones equipped with high-resolution cameras, sonar, and lighting systems. They are primarily used for hull inspections, capturing detailed images to assess biofouling accumulation and coating integrity.</p>
+      </section>
+      <!-- 5.2 Crawling ROVs -->
+      <section id="crawling-rovs" class="section">
+        <h3>5.2 Crawling ROVs – Grooming & Cleaning</h3>
+        <p>Crawling ROVs attach directly to the vessel’s hull and use suction combined with filtration systems to remove light biofouling. Their precise movements help minimize damage to protective coatings while ensuring thorough cleaning.</p>
+      </section>
+    </section>
+
+    <!-- 6.0 Operating Procedures -->
+    <section id="operating-procedures" class="section">
+      <h2>6.0 Operating Procedures</h2>
+      <!-- 6.1 MaintainX -->
+      <section id="maintainx" class="section">
+        <h3>6.1 MaintainX</h3>
+        <p>MaintainX is a cloud-based Computerised Maintenance Management System (CMMS) that digitizes maintenance logs, checklists, emergency procedures, and reports. It provides real-time tracking and scheduling to ensure that all components of the IWHC system remain in optimal condition.</p>
+      </section>
+      <!-- 6.2 Mobilisation/Pre-Mobilisation -->
+      <section id="mobilisation" class="section">
+        <h3>6.2 Mobilisation/Pre-Mobilisation of Filter</h3>
+        <p>Before deployment, complete the following steps:</p>
+        <ul>
+          <li><strong>Equipment Manifest:</strong> Verify all items against the System Equipment Manifest.</li>
+          <li><strong>Lifting and Positioning:</strong> Use 5m wire rope slings and secure ‘pig ears’ on the container. Coordinate with the crane operator ensuring 1800 mm clearance.</li>
+          <li><strong>Spill Bund Deployment:</strong> Deploy the PVC spill bund with an anti-abrasion mat (8000 mm x 4000 mm) beneath the system.</li>
+          <li><strong>System Levelling:</strong> Lower the container onto the bund and mats; verify level using a 1200 mm Stanley level.</li>
+          <li><strong>Door Configuration:</strong> Secure designated doors (typically Doors 1 and 12 remain closed) to limit water intrusion.</li>
+          <li><strong>Catch Bunds for Discharge Chutes:</strong> Position catch bunds carefully.</li>
+          <li><strong>Solids Catch Frames:</strong> Fit frames with fresh bulker bags.</li>
+          <li><strong>Power Connection:</strong> Connect the electrical lead to the generator.</li>
+          <li><strong>Post-Mobilisation Inventory Check:</strong> Re-check all components against the manifest.</li>
+        </ul>
+      </section>
+      <!-- 6.3 System Initialisation -->
+      <section id="system-init" class="section">
+        <h3>6.3 System Initialisation</h3>
+        <p>Prepare the IWHC system on-site by:</p>
+        <ul>
+          <li>Installing and securing the BOH (Bow Screen Hopper) and C2H (Catch Hopper) using holding pins.</li>
+          <li>Positioning the Perspex splash unit after removing travel pins.</li>
+          <li>Rolling the B2H (Baleen Hopper) into position and securing it with locking pins (using two operators if necessary).</li>
+          <li>Installing bunds and sump pumps and connecting discharge lines.</li>
+          <li>Connecting the fresh water supply to the bag filter inlet and the main 63A electrical lead.</li>
+          <li>Adjusting flow rates over the bow screen for optimal performance.</li>
+        </ul>
+      </section>
+      <!-- 6.4 Hose/Trash Pump/Rapid Reel/HPU Initialisation -->
+      <section id="hose-init" class="section">
+        <h3>6.4 Hose/Trash Pump/Rapid Reel/HPU Initialisation</h3>
+        <ul>
+          <li><strong>6.4.1 Trash Pump Initialisation:</strong> Position the Stanley uplift pump ensuring a hose loop of >1 meter; connect the orange tiger tail hose and flood the system to prime the pump (38 L/min; 2200 psi).</li>
+          <li><strong>6.4.2 Hydraulic Power Unit (HPU) Initialisation:</strong> Place the HPU on a stable surface near the filtration unit with at least 1 m clearance, connect hydraulic lines securely, and adjust the actuating lever.</li>
+          <li><strong>6.4.3 Rapid Reel Setup and Operation:</strong> Verify that the rapid reel is loaded with all hoses, then deploy and secure the reel assembly.</li>
+          <li><strong>6.4.4 Final Checks Before Operation:</strong> Confirm that all connections are secure, the hose is fully primed, and power/hydraulic systems are operational.</li>
+        </ul>
+      </section>
+      <!-- 6.5 Operation -->
+      <section id="operation" class="section">
+        <h3>6.5 Operation</h3>
+        <ul>
+          <li><strong>6.5.1 System Start-Up:</strong> Engage the main isolation switch, verify container lights, and activate the compressor; purge water traps as necessary.</li>
+          <li><strong>6.5.2 Monitoring During Operation:</strong> Monitor flow rates, bund levels (using float switches), and sludge pump operation.</li>
+          <li><strong>6.5.3 Spray Bar Functionality:</strong> Ensure spray bars are cleaning screens correctly; adjust limit switches and nozzle alignment as required.</li>
+          <li><strong>6.5.4 System Maintenance During Operation:</strong> Regularly inspect nozzles, manage alarms, and address any irregularities immediately.</li>
+        </ul>
+      </section>
+      <!-- 6.6 Daily Shutdown -->
+      <section id="daily-shutdown" class="section">
+        <h3>6.6 Daily Shutdown</h3>
+        <ul>
+          <li>Isolate the uplift pump and flush the system with fresh water.</li>
+          <li>Run the system clean function to flush the baleen screens.</li>
+          <li>Drain the compressor pig completely.</li>
+          <li>Clean the Baleen and Bow Screen hoppers using a low-pressure hose.</li>
+          <li>Rinse the entire system to remove salt and debris.</li>
+          <li>Apply detergent for deep cleaning and pressure wash the bunds.</li>
+          <li>Lubricate pneumatic motors and inspect the bulker bag bund and waste management.</li>
+        </ul>
+      </section>
+      <!-- 6.7 Demobilisation -->
+      <section id="demobilisation" class="section">
+        <h3>6.7 Demobilisation</h3>
+        <p>Follow the daily shutdown procedures, then disconnect all electrical components, remove hoses and support brackets, and stow the system for transport.</p>
+      </section>
+      <!-- 6.8 Decommissioning -->
+      <section id="decommissioning" class="section">
+        <h3>6.8 Decommissioning</h3>
+        <p>Reconfigure the system for closed-loop recirculation by modifying discharge lines, running cleaning and rinse cycles for at least 4 hours, and finally draining all bunds and tanks to secure the system for storage or transport.</p>
+      </section>
+      <!-- 6.9 Storage Clean -->
+      <section id="storage-clean" class="section">
+        <h3>6.9 Storage Clean</h3>
+        <p>Perform an extensive cleaning cycle by charging the system with fresh water, running several rinse cycles to remove detergent, thoroughly drying all components, applying protective coatings, and storing components with dust covers.</p>
+      </section>
+      <!-- 6.10 Cleaning Procedures -->
+      <section id="cleaning-procedures" class="section">
+        <h3>6.10 Cleaning Procedures</h3>
+        <ul>
+          <li><strong>6.10.1 Proactive vs. Reactive Cleaning:</strong> Routine light cleaning is performed proactively to prevent fouling, while reactive cleaning is used after significant fouling buildup with more aggressive techniques.</li>
+          <li><strong>6.10.2 Antifouling Coatings (AFC) & Tiles on Submarines – Types and Damage:</strong> Use cleaning methods that match the coating type to avoid damage and document any damage in MarineStream™.</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- 7.0 Maintenance Procedures -->
+    <section id="maintenance-procedures" class="section">
+      <h2>7.0 Maintenance Procedures</h2>
+      <!-- 7.1 Routine Maintenance Schedule -->
+      <section id="routine-maintenance" class="section">
+        <h3>7.1 Routine Maintenance Schedule</h3>
+        <p>Maintenance tasks are scheduled at weekly, monthly, quarterly, and annual intervals. Regular inspections, lubrication of moving parts, and cleaning of filters and hoses are essential to ensure continued system performance.</p>
+      </section>
+      <!-- 7.2 Maintenance Processes and Major Cleaning Processes -->
+      <section id="maintenance-processes" class="section">
+        <h3>7.2 Maintenance Processes and Major Cleaning Processes</h3>
+        <ul>
+          <li><strong>Bow Screen Filter:</strong> Disconnect unions, remove the bund, clean with truck wash and vinegar, and reassemble with proper reconnection of sensors and float switches.</li>
+          <li><strong>Baleen Filter:</strong> Disconnect discharge lines, remove the bund, clean interior surfaces and pump connections, and then reassemble ensuring all electrical and plumbing connections are secure.</li>
+          <li><strong>Bag Filter Unit:</strong> Remove locking rings and filter bags, clean each bag with a high-pressure hose and vinegar solution, allow to dry, and reinstall.</li>
+          <li><strong>UV Unit:</strong> De-energise the unit, remove and clean quartz sleeves, inspect UV lamps for wear, and reassemble ensuring proper water flow.</li>
+          <li><strong>Additional Components:</strong> Clean the rapid reel, flush hoses thoroughly, inspect the trash pump for blockages, and rinse the spill bund and anti-abrasion mat.</li>
+        </ul>
+      </section>
+      <!-- 7.3 Replacement of Components/Consumables -->
+      <section id="component-replacement" class="section">
+        <h3>7.3 Replacement of Components/Consumables</h3>
+        <p>Regularly replace consumables such as filter bags, UV lamps/quartz sleeves, O-rings, lubricants, and cleaning agents. All replacements must be documented in the Consumable Usage Log (Appendix E) to ensure proper maintenance records are kept.</p>
+      </section>
+    </section>
+
+    <!-- 8.0 Reporting -->
+    <section id="reporting" class="section">
+      <h2>8.0 Reporting</h2>
+      <!-- 8.1 Purpose -->
+      <section id="reporting-purpose" class="section">
+        <h3>8.1 Purpose</h3>
+        <p>Reporting ensures that all maintenance activities, faults, and operational issues are systematically documented. This supports prompt troubleshooting and provides a verifiable record for regulatory audits.</p>
+      </section>
+      <!-- 8.2 Reporting Triggers -->
+      <section id="reporting-triggers" class="section">
+        <h3>8.2 Reporting Triggers</h3>
+        <p>Reports must be generated when:</p>
+        <ul>
+          <li>A system alarm or fault occurs.</li>
+          <li>A component failure or malfunction is detected.</li>
+          <li>A maintenance activity is performed (routine, corrective, or emergency).</li>
+          <li>A consumable is used or replaced.</li>
+          <li>A major operational issue (e.g., reduced flow or loss of suction) is observed.</li>
+        </ul>
+      </section>
+      <!-- 8.3 Reporting Process -->
+      <section id="reporting-process" class="section">
+        <h3>8.3 Reporting Process</h3>
+        <p>Document the issue with the date, time, affected component, and a detailed description. If an emergency shutdown is required, follow the emergency procedure and then submit a formal report using the Reporting Form (Appendix J).</p>
+      </section>
+      <!-- 8.4 Documentation and Record Keeping -->
+      <section id="documentation-records" class="section">
+        <h3>8.4 Documentation and Record Keeping</h3>
+        <p>All reports, logs, and records are maintained in MaintainX for audit purposes. Critical incidents are reviewed during regular maintenance audits to identify trends and prevent recurrence.</p>
+      </section>
+    </section>
+
+    <!-- 9.0 Troubleshooting -->
+    <section id="troubleshooting" class="section">
+      <h2>9.0 Troubleshooting</h2>
+      <!-- 9.1 Common Issues and Solutions -->
+      <section id="common-issues" class="section">
+        <h3>9.1 Common Issues and Solutions</h3>
+        <ul>
+          <li><strong>Loss of Suction:</strong> Can be caused by airlocks, blockages, disconnected hoses, or internal pump damage. Solutions include reversing small suction hoses, inspecting diver tools and couplings, and managing trapped air.</li>
+          <li><strong>Overflow of Bunds:</strong> Occurs when inlet flow exceeds limits. Shut down the uplift pump, allow discharge pumps to catch up, and ensure bund capacity is not exceeded.</li>
+          <li><strong>Spray Bar Issues:</strong> May be due to clogged nozzles or misalignment. Clean or replace nozzles, adjust limit switches, and verify alignment.</li>
+          <li><strong>Pneumatic/Electrical Issues:</strong> Check for air leaks, loose speed-fit connections, tripped E-stops, and water ingress in control panels.</li>
+          <li><strong>Header Tank Overflow:</strong> Monitor flow rates and adjust as needed to maintain levels below capacity.</li>
+          <li><strong>Screen Blockages:</strong> Remove large debris manually and clean screens regularly.</li>
+        </ul>
+      </section>
+      <!-- 9.2 Alarm/Fault Codes and Responses -->
+      <section id="alarm-codes" class="section">
+        <h3>9.2 Alarm/Fault Codes and Responses</h3>
+        <ul>
+          <li><strong>Air Supply Failure:</strong> Check compressor operation and inspect air lines for leaks.</li>
+          <li><strong>Water Supply Failure:</strong> Verify water supply integrity and header tank water levels.</li>
+          <li><strong>Power Failure (E-Stop Activated):</strong> Inspect and reset E-stop buttons once power is restored.</li>
+          <li><strong>Spray Bar Malfunction:</strong> Inspect limit switches and adjust nozzle alignment.</li>
+          <li><strong>Compressor Faults:</strong> Refer to the compressor manual (e.g., Kaeser rotary screw compressor) for troubleshooting.</li>
+        </ul>
+      </section>
+      <!-- 9.3 System Reset -->
+      <section id="system-reset" class="section">
+        <h3>9.3 System Reset</h3>
+        <p>After addressing the underlying fault, press the system alarm reset button and verify that all system indicators return to normal before restarting the system.</p>
+      </section>
+    </section>
+
+    <!-- 10.0 Safety Procedures -->
+    <section id="safety-procedures" class="section">
+      <h2>10.0 Safety Procedures</h2>
+      <!-- 10.1 Emergency Shutdown Protocol -->
+      <section id="emergency-shutdown" class="section">
+        <h3>10.1 Emergency Shutdown Protocol</h3>
+        <p>In the event of a critical system failure or hazardous situation, immediately engage all emergency stop (E-stop) buttons to cut power and halt operations. Depressurise the system, isolate power using the main isolation switch, secure all moving components, and follow post-shutdown troubleshooting procedures. An incident report must be completed documenting the cause and corrective actions.</p>
+      </section>
+      <!-- 10.2 Electrical Safety Considerations -->
+      <section id="electrical-safety" class="section">
+        <h3>10.2 Electrical Safety Considerations</h3>
+        <ul>
+          <li>Only qualified personnel should perform electrical maintenance.</li>
+          <li>Always implement lockout/tagout procedures before servicing.</li>
+          <li>Inspect all cables, connectors, and enclosures for signs of wear or water ingress.</li>
+        </ul>
+      </section>
+      <!-- 10.3 SWMS -->
+      <section id="swms" class="section">
+        <h3>10.3 Safe Work Method Statement (SWMS)</h3>
+        <p>The SWMS provides a structured framework for identifying, assessing, and controlling risks associated with IWHC operations. It must be reviewed, signed, and kept accessible on site prior to commencing any work.</p>
+      </section>
+    </section>
+
+    <!-- 11.0 Technical Specifications -->
+    <section id="technical-specifications" class="section">
+      <h2>11.0 Technical Specifications</h2>
+      <!-- 11.1 System Capacities and Limitations -->
+      <section id="system-capacities" class="section">
+        <h3>11.1 System Capacities and Limitations</h3>
+        <p>
+          <strong>Processing Capacity:</strong> Up to 60 cubic meters per hour.<br>
+          <strong>Filtration Level:</strong> Maintains a threshold between 25 to 50 microns.<br>
+          <strong>Pumping System:</strong> Utilizes three pumps for suction, transfer, and discharge.<br>
+          <strong>Variable Speed Drive (VSD):</strong> Allows adjustable motor control for energy efficiency.<br>
+          <strong>Limitations:</strong> System performance may be affected by power fluctuations, clogging, or incorrect VSD settings.
+        </p>
+      </section>
+      <!-- 11.2 Pump Specifications -->
+      <section id="pump-specs" class="section">
+        <h3>11.2 Pump Specifications</h3>
+        <ul>
+          <li><strong>Stanley TP08 Heavy Duty Trash Pump:</strong> Hydraulic trash pump with a flow rate of 38 L/min, hydraulic pressure of 2200 psi, 3-inch inlet/outlet, self-priming design.</li>
+          <li><strong>Tsurumi 40TM2.25 Submersible Pump:</strong> Submersible dry-motor pump delivering 1500 L/min; handles solids up to 10 mm; maximum liquid temperature 40°C; submersion depth of 30 m.</li>
+          <li><strong>Ultraflow UMDNSS7500/80/3 Submersible Pump:</strong> 1500 L/min pump, handles solids up to 20 mm; powered by a 7.5 kW motor; operating at 2800 RPM; suitable for 30 m submersion.</li>
+          <li><strong>B3XR-A/B 7.5kW Transfer Pump:</strong> Electric self-priming transfer pump with 1500 L/min flow, max pressure of 3.0 BAR, 6 m suction depth, and ability to handle solids up to 24 mm.</li>
+          <li><strong>Variable Speed Drive (ACS580):</strong> Supports input voltages from 200–240V or 380–480V, operates within a frequency range of 47–63 Hz, and utilizes scalar/vector control for precise motor management.</li>
+        </ul>
+      </section>
+      <!-- 11.3 Electrical and Water Supply Requirements -->
+      <section id="electrical-water" class="section">
+        <h3>11.3 Electrical and Water Supply Requirements</h3>
+        <p>
+          <strong>Power Supply:</strong> 63-amp three-phase power at 415V, 50Hz.<br>
+          <strong>Electrical Enclosures:</strong> Must be IP55 or IP68 rated, depending on exposure.<br>
+          <strong>Air Supply:</strong> Provided by a Kaeser rotary screw compressor (32 cubic feet per minute) for spray bar and pneumatic functions.<br>
+          <strong>Water Supply:</strong> A consistent water supply is critical for the operation of the spray bar header tank and the UV module.
+        </p>
+      </section>
+    </section>
+
+    <!-- 12.0 Environmental Considerations -->
+    <section id="environmental-considerations" class="section">
+      <h2>12.0 Environmental Considerations</h2>
+      <!-- 12.1 Legislation, Standards and Codes -->
+      <section id="legislation" class="section">
+        <h3>12.1 Legislation, Standards and Codes</h3>
+        <p>IWHC operations must comply with international standards including the IMO Biofouling Management Guidelines, MARPOL Annex V, ISO 20679:2025, as well as regional regulations such as Australia’s National Biofouling Management Guidelines and New Zealand's Craft Risk Management Standard.</p>
+      </section>
+      <!-- 12.2 Biosecurity Requirements -->
+      <section id="biosecurity" class="section">
+        <h3>12.2 Biosecurity Requirements</h3>
+        <p>Implement pre-cleaning inspections to establish baseline conditions, continuously monitor biofouling levels via MarineStream™, and ensure that at least 95% of dislodged fouling is captured. Post-clean verification must be documented to meet biosecurity standards.</p>
+      </section>
+      <!-- 12.3 Waste Disposal -->
+      <section id="waste-disposal" class="section">
+        <h3>12.3 Waste Disposal</h3>
+        <p>Waste streams (biological material, cleaning residues, process water) must be segregated and securely contained. Disposal must be carried out using approved methods with all treatment records and certificates retained.</p>
+      </section>
+      <!-- 12.4 Environmental Monitoring -->
+      <section id="env-monitoring" class="section">
+        <h3>12.4 Environmental Monitoring</h3>
+        <p>Regular testing of water quality (turbidity, total suspended solids, pH, dissolved oxygen, specific contaminants, and biological indicators) is essential. All monitoring data must be recorded in MarineStream™ for review and continuous improvement.</p>
+      </section>
+    </section>
+
+    <!-- 13.0 Record Keeping and Documentation -->
+    <section id="record-keeping" class="section">
+      <h2>13.0 Record Keeping and Documentation</h2>
+      <ul>
+        <li><strong>13.1 Daily Log Sheets:</strong> Templates for recording daily operational activities are maintained in MaintainX (see Appendix G).</li>
+        <li><strong>13.2 Maintenance Records:</strong> Detailed logs of all maintenance activities are recorded (see Appendix H).</li>
+        <li><strong>13.3 Incident Reporting Procedure:</strong> Use the standardized Reporting Form for documenting all system incidents (see Appendix J).</li>
+      </ul>
+    </section>
+
+    <!-- 14.0 Appendix -->
+    <section id="appendix" class="section">
+      <h2>14.0 Appendix</h2>
+      <ul>
+        <li><strong>14.1 Appendix A – Glossary of Terms:</strong> Definitions of key terms (e.g., IWHC SYSTEM 1, LP, FS, etc.).</li>
+        <li><strong>14.2 Appendix B – Safe Work Method Statement (SWMS):</strong> Detailed procedures, risk assessments, and contact information for key roles.</li>
+        <li><strong>14.3 Appendix D – Contact Information for Technical Support:</strong> Contact details for personnel including Adam Falconer-West, Tom Hazel, Mat Harvey, Kyden Bradley, and others.</li>
+        <li><strong>14.4 Appendix E – Consumable Usage Log:</strong> A log maintained in MaintainX for tracking consumable usage.</li>
+        <li><strong>14.5 Appendix F – Competency Verification:</strong> Documentation and guidelines for competency assessments and statements of attainment.</li>
+        <li><strong>14.6 Appendix G – Daily Log Sheets:</strong> Templates for daily operational log sheets maintained in MaintainX.</li>
+        <li><strong>14.7 Appendix H – Maintenance Recording Sheet:</strong> A detailed record-keeping template for maintenance activities.</li>
+        <li><strong>14.8 Appendix I – Maintenance Records:</strong> A log for storing and reviewing all maintenance records.</li>
+        <li><strong>14.9 Appendix J – Reporting Form:</strong> The standardized form for system issue and incident reporting.</li>
+        <li><strong>14.10 Appendix K – Tsurumi Submersible Pump Specifications</strong></li>
+        <li><strong>14.11 Appendix L – Ultraflow Submersible Pump Specifications</strong></li>
+        <li><strong>14.12 Appendix M – GMP Transfer Pump Specifications</strong></li>
+        <li><strong>14.13 Appendix N – UV Specifications</strong></li>
+        <li><strong>14.14 Appendix O – Trash Pump Specifications</strong></li>
+        <li><strong>14.15 Appendix P – Variable Speed Drive Specifications</strong></li>
+        <li><strong>14.16 Appendix Q – Mobilisation SOP</strong></li>
+        <li><strong>14.17 Appendix R – Initialisation SOP</strong></li>
+        <li><strong>14.18 Appendix S – Operation SOP</strong></li>
+        <li><strong>14.19 Appendix T – Daily Shutdown SOP</strong></li>
+        <li><strong>14.20 Appendix U – Demobilisation SOP</strong></li>
+        <li><strong>14.21 Appendix V – Waste Management Plan</strong></li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // Toggle mobile navigation
+    document.querySelector('.menu-toggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 70,
+            behavior: 'smooth'
+          });
+          // Update active state
+          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+          // Close mobile menu after selection
+          if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('active');
+          }
+        }
+      });
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        const sectionText = section.textContent.toLowerCase();
+        if (searchTerm === '' || sectionText.includes(searchTerm)) {
+          section.style.display = 'block';
+          // Highlight matches
+          if (searchTerm !== '') {
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            section.innerHTML = section.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+          }
+        } else {
+          section.style.display = 'none';
+        }
+      });
+    });
+
+    // Expandable navigation items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      const link = item.querySelector('.nav-link');
+      const subNav = item.querySelector('.sub-nav');
+      if (subNav) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          item.classList.toggle('expanded');
+        });
+      }
+    });
+
+    // Active section highlighting on scroll
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('.section');
+      let currentSection = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+          currentSection = '#' + section.getAttribute('id');
+        }
+      });
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === currentSection) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
